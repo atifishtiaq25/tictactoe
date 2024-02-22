@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+      "target": "es2016",
+      "lib": ["es2016", "dom"],
+      "outFile": "tictactoe.js",
+      "strict": true
+    },
+    "include": [
+      "tictactoe.ts"
+    ]
+  }
