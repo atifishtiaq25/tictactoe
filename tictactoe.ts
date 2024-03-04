@@ -1,10 +1,44 @@
 document.addEventListener('DOMContentLoaded', () => {
   const board = document.getElementById('board')!;
+  const buttonsContainer = document.getElementById('buttons-container') as HTMLElement;
   const backBtn = document.getElementById('backBtn') as HTMLButtonElement;
   const resetBtn = document.getElementById('resetBtn') as HTMLButtonElement;
+  const welcomeScreen = document.getElementById('welcomeScreen') as HTMLDivElement;
+
   let currentPlayer: 'X' | 'O' = 'X';
   const moves: { [index: string]: 'X' | 'O' } = {};
   let gameWon = false;
+
+
+  function showWelcomeScreen() {
+    welcomeScreen.style.display = 'flex';
+  }
+
+  function hideWelcomeScreen() {
+    welcomeScreen.style.display = 'none';
+  }
+
+  function handleCellHover(event: Event) {
+    const index = (event.target as HTMLDivElement).getAttribute('data-index');
+    const cell = event.target as HTMLDivElement;
+
+    if (gameWon) {
+      return;
+    }
+    else if (index && !moves[index]) {
+      cell.style.transition = 'background-color 0.3s ease';
+      cell.style.backgroundColor = 'lightgreen';
+    } else if (cell.textContent && cell.classList.contains('cell')) {
+      cell.style.transition = 'background-color 0.3s ease';
+      cell.style.backgroundColor = 'lightcoral';
+    }
+  }
+
+  function resetCellHover(event: Event) {
+    const cell = event.target as HTMLDivElement;
+    cell.style.transition = '';
+    cell.style.backgroundColor = '';
+  }
 
   function createBoard() {
     for (let i = 0; i < 9; i++) {
@@ -12,20 +46,20 @@ document.addEventListener('DOMContentLoaded', () => {
       cell.classList.add('cell');
       cell.setAttribute('data-index', i.toString());
       cell.addEventListener('click', handleCellClick);
+      cell.addEventListener('mouseover', handleCellHover);
+      cell.addEventListener('mouseout', resetCellHover);
       board.appendChild(cell);
     }
   }
 
-  function handleCellClick(event: Event) {
-    if (!gameWon) {
-      const index = (event.target as HTMLDivElement).getAttribute('data-index');
-      if (index && !moves[index]) {
-        (event.target as HTMLDivElement).textContent = currentPlayer;
-        moves[index] = currentPlayer;
-        checkWin(currentPlayer);
-        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-      }
-    }
+  function hideBoardAndButtons() {  
+    board.style.display = 'none';
+    buttonsContainer.style.display = 'none';
+  }
+  
+  function showBoardAndButtons() {  
+    board.style.display = 'grid';
+    buttonsContainer.style.display = 'flex'
   }
 
   function checkWin(player: 'X' | 'O') {
@@ -49,6 +83,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function handleCellClick(event: Event) {
+    if (!gameWon) {
+      const index = (event.target as HTMLDivElement).getAttribute('data-index');
+      if (index && !moves[index]) {
+        (event.target as HTMLDivElement).textContent = currentPlayer;
+        moves[index] = currentPlayer;
+        checkWin(currentPlayer);
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      }
+    } else {
+      setTimeout(() => alert('Reset the board to play again!!'), 0);
+    }
+  }
+
   function undoMove() {
     if (!gameWon && Object.keys(moves).length > 0) {
       const lastMove = Object.keys(moves).pop()!;
@@ -69,7 +117,17 @@ document.addEventListener('DOMContentLoaded', () => {
     gameWon = false;
   }
 
-  createBoard();
   backBtn.addEventListener('click', undoMove);
   resetBtn.addEventListener('click', resetGame);
+
+  hideBoardAndButtons();
+  createBoard();
+
+  showWelcomeScreen();
+
+  const startGameBtn = document.getElementById('startGameBtn') as HTMLButtonElement;
+  startGameBtn.addEventListener('click', () => {
+    hideWelcomeScreen();
+    showBoardAndButtons();
+  });
 });

@@ -7,9 +7,16 @@
   <link rel="stylesheet" href="tictactoe.css">
 </head>
 <body>
-  <div id="board"></div>
   <script src="tictactoe.js"></script>
-  <div id="buttons-container">
+
+  <div id="welcomeScreen" class="welcome-screen">
+    <h1>Welcome to Tic Tac Toe!</h1>
+    <p>Player X starts first. Click "Start Game" to begin.</p>
+    <button id="startGameBtn">Start Game</button>
+  </div>
+
+  <div id="board" class="board"></div>
+  <div id="buttons-container" class="buttons">
     <button id="backBtn">Back</button>
     <button id="resetBtn">Reset</button>
   </div>
